@@ -7,5 +7,7 @@ import vercel from '@astrojs/vercel/serverless'
 export default defineConfig({
     output: 'hybrid',
     integrations: [tailwind()],
-    adapter: vercel(),
+    adapter: vercel({
+        includeFiles: ['./gay_flag.webp'],
+    }),
 })
