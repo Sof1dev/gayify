@@ -4,16 +4,33 @@ import path from "node:path";
 import sharp from "sharp";
 
 export const prerender = false;
-const TRANSPARENCY = 0.4;
+const DEFAULT_TRANSPARENCY = 0.4;
 
 export const POST: APIRoute = async ({ request }) => {
 	const formData = await request.formData();
-	console.log(formData);
 
-	const file = formData.get("file") as File;
+	const file: File = formData.get("file") as File;
+
+	let transparency: number;
+	try {
+		transparency = Number.parseInt(
+			formData.get("transparency")?.toString() || "",
+		);
+	} catch {
+		transparency = DEFAULT_TRANSPARENCY;
+	}
 
 	const sharpFile = sharp(await file.arrayBuffer());
-	const fileMetadata = await sharpFile.metadata();
+
+	let fileMetadata: sharp.Metadata;
+
+	try {
+		fileMetadata = await sharpFile.metadata();
+	} catch {
+		return new Response("", {
+			status: 400,
+		});
+	}
 
 	const flagPath = path.join(process.cwd(), "gay_flag.webp");
 	const flag = fs.readFileSync(flagPath);
@@ -24,7 +41,8 @@ export const POST: APIRoute = async ({ request }) => {
 			width: fileMetadata.width,
 			fit: "fill",
 		})
-		.ensureAlpha(TRANSPARENCY)
+		// TODO: add try here to check if transparency/100 is 0-1
+		.ensureAlpha(transparency / 100)
 		.toBuffer();
 
 	const outputBuffer = await sharp(await file.arrayBuffer())

@@ -25,8 +25,32 @@ export const prerender = true
                         <p id="filename" class="hidden overflow-ellipsis"></p>
                     </div>
                 </label>
-                <input type="file" name="file" id="file" class="hidden" />
+                <input
+                    type="file"
+                    accept="image/*"
+                    name="file"
+                    id="file"
+                    class="hidden"
+                />
             </form>
+            <section
+                class="flex flex-col justify-center items-center w-full py-2 px-2"
+            >
+                <label for="slider">Flag Transparency:</label>
+                <div
+                    class="flex flex-row w-full items-center justify-center gap-2"
+                >
+                    <input
+                        type="range"
+                        max="100"
+                        min="0"
+                        value="40"
+                        id="slider"
+                        class="max-w-48 w-full"
+                    />
+                    <span id="percentage" class="w-12">40%</span>
+                </div>
+            </section>
             <section class="flex flex-row gap-2">
                 <button class="bg-green-400 px-4 py-2 rounded" id="submit"
                     >Submit</button
@@ -74,6 +98,11 @@ export const prerender = true
         const clear = document.getElementById('clear') as HTMLButtonElement
         const fileNameText = document.getElementById(
             'filename'
+        ) as HTMLButtonElement
+
+        const slider = document.getElementById('slider') as HTMLButtonElement
+        const percentageSpan = document.getElementById(
+            'percentage'
         ) as HTMLButtonElement
 
         const dropHandler = (e: any) => {
@@ -137,6 +166,7 @@ export const prerender = true
             if (file !== null) {
                 const formData = new FormData()
                 formData.append('file', file)
+                formData.append('transparency', slider.value)
 
                 const res = await fetch(`${window.location.href}/api/gayify`, {
                     method: 'POST',
@@ -144,8 +174,14 @@ export const prerender = true
                 })
 
                 const data = await res.blob()
-                showFile(URL.createObjectURL(data), file.name)
+                if (res.status == 200) {
+                    showFile(URL.createObjectURL(data), file.name)
+                }
             }
+        }
+
+        const updatePercentageText = () => {
+            percentageSpan.textContent = `${slider.value}%`
         }
 
         dropZone?.addEventListener('dragenter', dragOverHandler)
@@ -157,5 +193,6 @@ export const prerender = true
         submit.addEventListener('click', submitFile)
 
         clear.addEventListener('click', clearFile)
+        slider.addEventListener('input', updatePercentageText)
     })
 </script>
