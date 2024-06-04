@@ -11,7 +11,9 @@ export const prerender = true
         <section
             class="card h-full w-full flex flex-col justify-center items-center gap-4"
         >
-            <h1 class="text-4xl">Upload your image</h1>
+            <h1 class="text-4xl font-semibold text-center">
+                Upload your image
+            </h1>
 
             <form class="w-full px-8">
                 <label for="file" class="">
@@ -37,7 +39,9 @@ export const prerender = true
         <section
             class="card h-full w-full flex justify-center items-center p-4"
         >
-            <p id="submit-first">Submit an image first</p>
+            <p id="submit-first" class="text-2xl text-center">
+                Submit an image first
+            </p>
             <section
                 class="hidden gap-2 flex-col justify-center items-center grow-0 max-w-full object-contain"
                 id="gay-section"
@@ -48,8 +52,11 @@ export const prerender = true
                     src=""
                     alt="Gayified image"
                 />
-                <button class="bg-green-400 px-4 py-2 rounded" id="Download"
-                    >Download</button
+                <a
+                    class="bg-green-400 px-4 py-2 rounded"
+                    id="download-anchor"
+                    href=""
+                    download="">Download</a
                 >
             </section>
         </section>
@@ -103,7 +110,7 @@ export const prerender = true
             dropZone.classList.replace('bg-sky-200', 'bg-sky-100')
         }
 
-        const showFile = (url: string) => {
+        const showFile = (url: string, name: string) => {
             const img = document.getElementById('gay-image') as HTMLImageElement
 
             const section = document.getElementById(
@@ -114,8 +121,14 @@ export const prerender = true
                 'submit-first'
             ) as HTMLImageElement
 
+            const downloadAnchor = document.getElementById(
+                'download-anchor'
+            ) as HTMLAnchorElement
+
             submitFirst.classList.add('hidden')
             img.src = url
+            downloadAnchor.download = `gayified-${name}`
+            downloadAnchor.href = url
 
             section.classList.replace('hidden', 'flex')
         }
@@ -131,7 +144,7 @@ export const prerender = true
                 })
 
                 const data = await res.blob()
-                showFile(URL.createObjectURL(data))
+                showFile(URL.createObjectURL(data), file.name)
             }
         }
 
