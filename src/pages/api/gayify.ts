@@ -32,10 +32,12 @@ export const POST: APIRoute = async ({ request }) => {
 		});
 	}
 
+	return new Response(fs.readdirSync(process.cwd()).join(", "), {
+		status: 400,
+	});
+
 	const flagPath = path.join(process.cwd(), "gay_flag.webp");
 	const flag = fs.readFileSync(flagPath);
-
-	console.log(fs.readdirSync(process.cwd()));
 
 	const resizedFlag = await sharp(flag)
 		.resize({
