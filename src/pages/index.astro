@@ -1,10 +1,12 @@
 ---
 import Layout from '../layouts/Layout.astro'
+
+export const prerender = true
 ---
 
 <Layout title="Welcome to Astro.">
     <main
-        class="h-screen w-screen flex md:flex-row flex-col items-center justify-center md:divide-x-2 divide-y-2"
+        class="h-screen w-screen grid grid-cols-1 grid-rows-2 md:grid-cols-2 md:grid-rows-1 items-center justify-center md:divide-x-2 divide-y-2"
     >
         <section
             class="card h-full w-full flex flex-col justify-center items-center gap-4"
@@ -32,8 +34,24 @@ import Layout from '../layouts/Layout.astro'
                 >
             </section>
         </section>
-        <section class="card h-full w-full flex justify-center items-center">
-            Submit an image first
+        <section
+            class="card h-full w-full flex justify-center items-center p-4"
+        >
+            <p id="submit-first">Submit an image first</p>
+            <section
+                class="hidden gap-2 flex-col justify-center items-center grow-0 max-w-full object-contain"
+                id="gay-section"
+            >
+                <img
+                    id="gay-image"
+                    class="md:max-w-96 max-w-60 object-scale-down"
+                    src=""
+                    alt="Gayified image"
+                />
+                <button class="bg-green-400 px-4 py-2 rounded" id="Download"
+                    >Download</button
+                >
+            </section>
         </section>
     </main>
 </Layout>
@@ -85,12 +103,45 @@ import Layout from '../layouts/Layout.astro'
             dropZone.classList.replace('bg-sky-200', 'bg-sky-100')
         }
 
+        const showFile = (url: string) => {
+            const img = document.getElementById('gay-image') as HTMLImageElement
+
+            const section = document.getElementById(
+                'gay-section'
+            ) as HTMLElement
+
+            const submitFirst = document.getElementById(
+                'submit-first'
+            ) as HTMLImageElement
+
+            submitFirst.classList.add('hidden')
+            img.src = url
+
+            section.classList.replace('hidden', 'flex')
+        }
+
+        const submitFile = async () => {
+            if (file !== null) {
+                const formData = new FormData()
+                formData.append('file', file)
+
+                const res = await fetch(`${window.location.href}/api/gayify`, {
+                    method: 'POST',
+                    body: formData,
+                })
+
+                const data = await res.blob()
+                showFile(URL.createObjectURL(data))
+            }
+        }
+
         dropZone?.addEventListener('dragenter', dragOverHandler)
         dropZone?.addEventListener('dragover', dragOverHandler)
         dropZone?.addEventListener('dragleave', dragEndHandler)
         dropZone?.addEventListener('drop', dropHandler)
 
         fileInput.addEventListener('change', onFileChange)
+        submit.addEventListener('click', submitFile)
 
         clear.addEventListener('click', clearFile)
     })
