@@ -176,6 +176,8 @@ export const prerender = true
                 const data = await res.blob()
                 if (res.status == 200) {
                     showFile(URL.createObjectURL(data), file.name)
+                } else {
+                    console.log(await data.text())
                 }
             }
         }
