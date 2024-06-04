@@ -1,0 +1,97 @@
+---
+import Layout from '../layouts/Layout.astro'
+---
+
+<Layout title="Welcome to Astro.">
+    <main
+        class="h-screen w-screen flex md:flex-row flex-col items-center justify-center md:divide-x-2 divide-y-2"
+    >
+        <section
+            class="card h-full w-full flex flex-col justify-center items-center gap-4"
+        >
+            <h1 class="text-4xl">Upload your image</h1>
+
+            <form class="w-full px-8">
+                <label for="file" class="">
+                    <div
+                        id="filedrag"
+                        class="h-48 bg-sky-100 border-dotted border-sky-400
+                        border-4 dotted cursor-pointer flex justify-center items-center overflow-x-hidden"
+                    >
+                        <p id="filename" class="hidden overflow-ellipsis"></p>
+                    </div>
+                </label>
+                <input type="file" name="file" id="file" class="hidden" />
+            </form>
+            <section class="flex flex-row gap-2">
+                <button class="bg-green-400 px-4 py-2 rounded" id="submit"
+                    >Submit</button
+                >
+                <button class="bg-blue-300 px-4 py-2 rounded" id="clear"
+                    >Clear</button
+                >
+            </section>
+        </section>
+        <section class="card h-full w-full flex justify-center items-center">
+            Submit an image first
+        </section>
+    </main>
+</Layout>
+
+<script>
+    var file: File | null = null
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const dropZone = document.getElementById('filedrag') as HTMLDivElement
+        const fileInput = document.getElementById('file') as HTMLInputElement
+
+        const submit = document.getElementById('submit') as HTMLButtonElement
+        const clear = document.getElementById('clear') as HTMLButtonElement
+        const fileNameText = document.getElementById(
+            'filename'
+        ) as HTMLButtonElement
+
+        const dropHandler = (e: any) => {
+            e.preventDefault()
+            const dt = e.dataTransfer
+            const files = dt.files
+            console.log(files[0])
+            if (files.length > 0 && files[0]) {
+                file = files[0]
+                fileNameText.textContent = files[0].name || ''
+                fileNameText.classList.remove('hidden')
+            }
+        }
+        const onFileChange = (e: Event) => {
+            const files = (e.currentTarget as HTMLInputElement).files
+            if (files === null || files.length <= 0) return
+
+            file = files[0]
+            fileNameText.textContent = file.name || ''
+            fileNameText.classList.remove('hidden')
+        }
+        const clearFile = (e: any) => {
+            fileNameText.textContent = ''
+            fileNameText.classList.add('hidden')
+        }
+
+        const dragOverHandler = (e: any) => {
+            e.preventDefault()
+            dropZone.classList.replace('bg-sky-100', 'bg-sky-200')
+        }
+
+        const dragEndHandler = (e: any) => {
+            e.preventDefault()
+            dropZone.classList.replace('bg-sky-200', 'bg-sky-100')
+        }
+
+        dropZone?.addEventListener('dragenter', dragOverHandler)
+        dropZone?.addEventListener('dragover', dragOverHandler)
+        dropZone?.addEventListener('dragleave', dragEndHandler)
+        dropZone?.addEventListener('drop', dropHandler)
+
+        fileInput.addEventListener('change', onFileChange)
+
+        clear.addEventListener('click', clearFile)
+    })
+</script>
