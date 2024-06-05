@@ -4,7 +4,7 @@ import path from "node:path";
 import sharp from "sharp";
 
 const DEFAULT_TRANSPARENCY = 0.4;
-
+export const prerender = false;
 export const POST: APIRoute = async ({ request }) => {
 	const formData = await request.formData();
 
@@ -31,17 +31,11 @@ export const POST: APIRoute = async ({ request }) => {
 		});
 	}
 
-	return new Response(
-		`
-	${fs.readdirSync(process.cwd()).join(",")}\n
-		${process.cwd()}
-	`,
-		{
-			status: 400,
-		},
-	);
+	const url = new URL("../../../gay_flag.webp", import.meta.url);
+
+	console.log(url);
 	const flagPath = path.join(process.cwd(), "gay_flag.webp");
-	const flag = fs.readFileSync(flagPath);
+	const flag = fs.readFileSync(url.pathname);
 
 	const resizedFlag = await sharp(flag)
 		.resize({
