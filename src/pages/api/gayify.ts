@@ -3,7 +3,6 @@ import fs from "node:fs";
 import path from "node:path";
 import sharp from "sharp";
 
-export const prerender = false;
 const DEFAULT_TRANSPARENCY = 0.4;
 
 export const POST: APIRoute = async ({ request }) => {
@@ -32,11 +31,8 @@ export const POST: APIRoute = async ({ request }) => {
 		});
 	}
 
-	const imgUrl = await fs.readFileSync(
-		new URL("../../../src/assets/images/gay_flag.webp", import.meta.url),
-	);
-	// const flagPath = path.join(process.cwd(), "gay_flag.webp");
-	const flag = fs.readFileSync(imgUrl);
+	const flagPath = path.join(process.cwd(), "gay_flag.webp");
+	const flag = fs.readFileSync(flagPath);
 
 	const resizedFlag = await sharp(flag)
 		.resize({

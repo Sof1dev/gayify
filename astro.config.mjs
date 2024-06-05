@@ -3,11 +3,11 @@ import tailwind from '@astrojs/tailwind'
 
 import vercel from '@astrojs/vercel/serverless'
 
-const includeFiles = ['src/assets/images/gay_flag.webp']
+const includeFiles = ['gay_flag.webp']
 
 // https://astro.build/config
 export default defineConfig({
-    output: 'hybrid',
+    output: 'server',
     integrations: [tailwind()],
     adapter: vercel({
         functionPerRoute: false,
