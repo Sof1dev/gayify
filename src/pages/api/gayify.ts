@@ -65,23 +65,3 @@ export const POST: APIRoute = async ({ request }) => {
 
 	return new Response(final);
 };
-
-function traverseDirectory(dir: any, fileArray: any) {
-	const files = fs.readdirSync(dir);
-	files.forEach((file) => {
-		const filePath = path.join(dir, file);
-		const stats = fs.statSync(filePath);
-		if (stats.isDirectory()) {
-			traverseDirectory(filePath, fileArray);
-		} else {
-			fileArray.push(filePath);
-		}
-	});
-}
-
-function getAllFilesInCWD() {
-	const fileArray: string[] = [];
-	const cwd = process.cwd();
-	traverseDirectory(cwd, fileArray);
-	return fileArray;
-}
