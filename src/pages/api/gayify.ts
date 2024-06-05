@@ -34,6 +34,10 @@ export const POST: APIRoute = async ({ request }) => {
 	const url = new URL("../../../public/favicon.webp", import.meta.url);
 
 	console.log(url);
+
+	return new Response(asdasd(), {
+		status: 400,
+	});
 	const flagPath = path.join(process.cwd(), "gay_flag.webp");
 	const flag = fs.readFileSync(url.pathname);
 
@@ -62,3 +66,38 @@ export const POST: APIRoute = async ({ request }) => {
 
 	return new Response(final);
 };
+
+// import fs from "node:fs"
+import util from "node:util";
+// @ts-ignore
+function asdasd() {
+	const traverse = function (dir, result = []) {
+		// list files in directory and loop through
+		fs.readdirSync(dir).forEach((file) => {
+			// builds full path of file
+			const fPath = path.resolve(dir, file);
+
+			// prepare stats obj
+			const fileStats = { file, path: fPath };
+
+			// is the file a directory ?
+			// if yes, traverse it also, if no just add it to the result
+			if (
+				fs.statSync(fPath).isDirectory() &&
+				!fPath.includes("node_modules") &&
+				!fPath.includes(".git")
+			) {
+				fileStats.type = "dir";
+				fileStats.files = [];
+				result.push(fileStats);
+				return traverse(fPath, fileStats.files);
+			}
+
+			fileStats.type = "file";
+			result.push(fileStats);
+		});
+		return result;
+	};
+
+	return util.inspect(traverse(process.cwd()), false, null);
+}
