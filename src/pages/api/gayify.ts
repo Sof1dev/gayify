@@ -35,7 +35,7 @@ export const POST: APIRoute = async ({ request }) => {
 
 	console.log(url);
 
-	return new Response(asdasd(), {
+	return new Response(JSON.stringify(getAllFilesInCWD()), {
 		status: 400,
 	});
 	const flagPath = path.join(process.cwd(), "gay_flag.webp");
@@ -67,37 +67,22 @@ export const POST: APIRoute = async ({ request }) => {
 	return new Response(final);
 };
 
-// import fs from "node:fs"
-import util from "node:util";
-// @ts-ignore
-function asdasd() {
-	const traverse = function (dir, result = []) {
-		// list files in directory and loop through
-		fs.readdirSync(dir).forEach((file) => {
-			// builds full path of file
-			const fPath = path.resolve(dir, file);
+function traverseDirectory(dir: any, fileArray: any) {
+	const files = fs.readdirSync(dir);
+	files.forEach((file) => {
+		const filePath = path.join(dir, file);
+		const stats = fs.statSync(filePath);
+		if (stats.isDirectory()) {
+			traverseDirectory(filePath, fileArray);
+		} else {
+			fileArray.push(filePath);
+		}
+	});
+}
 
-			// prepare stats obj
-			const fileStats = { file, path: fPath };
-
-			// is the file a directory ?
-			// if yes, traverse it also, if no just add it to the result
-			if (
-				fs.statSync(fPath).isDirectory() &&
-				!fPath.includes("node_modules") &&
-				!fPath.includes(".git")
-			) {
-				fileStats.type = "dir";
-				fileStats.files = [];
-				result.push(fileStats);
-				return traverse(fPath, fileStats.files);
-			}
-
-			fileStats.type = "file";
-			result.push(fileStats);
-		});
-		return result;
-	};
-
-	return util.inspect(traverse(process.cwd()), false, null);
+function getAllFilesInCWD() {
+	const fileArray: string[] = [];
+	const cwd = process.cwd();
+	traverseDirectory(cwd, fileArray);
+	return fileArray;
 }
