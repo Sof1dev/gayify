@@ -31,15 +31,14 @@ export const POST: APIRoute = async ({ request }) => {
 		});
 	}
 
-	const url = new URL("../../../public/favicon.webp", import.meta.url);
+	let flagPath: string;
 
-	console.log(url);
-
-	return new Response(JSON.stringify(getAllFilesInCWD()), {
-		status: 400,
-	});
-	const flagPath = path.join(process.cwd(), "gay_flag.webp");
-	const flag = fs.readFileSync(url.pathname);
+	if (import.meta.env.PROD) {
+		flagPath = "/var/task/vercel/path0/gay_flag.webp";
+	} else {
+		flagPath = path.join(process.cwd(), "gay_flag.webp");
+	}
+	const flag = fs.readFileSync(flagPath);
 
 	const resizedFlag = await sharp(flag)
 		.resize({
