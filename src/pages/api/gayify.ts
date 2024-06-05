@@ -31,7 +31,7 @@ export const POST: APIRoute = async ({ request }) => {
 		});
 	}
 
-	const url = new URL("../../../gay_flag.webp", import.meta.url);
+	const url = new URL("../../../public/favicon.webp", import.meta.url);
 
 	console.log(url);
 	const flagPath = path.join(process.cwd(), "gay_flag.webp");
