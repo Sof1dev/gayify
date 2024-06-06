@@ -5,6 +5,10 @@ export const prerender = true
 ---
 
 <Layout title="Gay-ify your images">
+    <div
+        class="absolute inset-0 -z-10 h-full w-full bg-white bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:16px_16px]"
+    >
+    </div>
     <main
         class="h-screen w-screen grid grid-cols-1 grid-rows-2 md:grid-cols-2 md:grid-rows-1 items-center justify-center md:divide-x-2 divide-y-2"
     >
@@ -34,8 +38,20 @@ export const prerender = true
                 />
             </form>
             <section
-                class="flex flex-col justify-center items-center w-full py-2 px-2"
+                class="flex flex-col justify-center items-center w-full py-2 gap-2 px-2"
             >
+                <div
+                    class="flex flex-row w-full items-center justify-center gap-2"
+                >
+                    <label for="flag">Flag</label>
+                    <select name="flag" id="flag" class="rounded">
+                        <option value="lgbt">LGBT+ Flag</option>
+                        <option value="gay">Gay Flag</option>
+                        <option value="lesbian">Lesbian Flag</option>
+                        <option value="trans">Transgender Flag</option>
+                        <option value="enby">Non Binary Flag</option>
+                    </select>
+                </div>
                 <label for="slider">Flag Transparency:</label>
                 <div
                     class="flex flex-row w-full items-center justify-center gap-2"
@@ -100,7 +116,9 @@ export const prerender = true
             'filename'
         ) as HTMLButtonElement
 
-        const slider = document.getElementById('slider') as HTMLButtonElement
+        const slider = document.getElementById('slider') as HTMLInputElement
+        const flag = document.getElementById('flag') as HTMLInputElement
+
         const percentageSpan = document.getElementById(
             'percentage'
         ) as HTMLButtonElement
@@ -166,12 +184,18 @@ export const prerender = true
             if (file !== null) {
                 const formData = new FormData()
                 formData.append('file', file)
+                formData.append('flag', flag.value)
                 formData.append('transparency', slider.value)
 
-                const res = await fetch(`${window.location.href}/api/gayify`, {
-                    method: 'POST',
-                    body: formData,
-                })
+                console.log(import.meta.env)
+
+                const res = await fetch(
+                    `${import.meta.env.PUBLIC_BACKEND_URL}/api/gayify`,
+                    {
+                        method: 'POST',
+                        body: formData,
+                    }
+                )
 
                 const data = await res.blob()
                 if (res.status == 200) {

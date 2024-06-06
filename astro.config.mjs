@@ -1,16 +1,10 @@
 import { defineConfig } from 'astro/config'
 import tailwind from '@astrojs/tailwind'
-
-import vercel from '@astrojs/vercel/serverless'
-
-const includeFiles = ['gay_flag.webp']
+import vercelStatic from '@astrojs/vercel/static'
 
 // https://astro.build/config
 export default defineConfig({
-    output: 'server',
+    output: 'static',
     integrations: [tailwind()],
-    adapter: vercel({
-        functionPerRoute: false,
-        includeFiles: includeFiles,
-    }),
+    adapter: vercelStatic(),
 })
