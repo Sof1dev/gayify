@@ -187,10 +187,8 @@ export const prerender = true
                 formData.append('flag', flag.value)
                 formData.append('transparency', slider.value)
 
-                console.log(import.meta.env)
-
                 const res = await fetch(
-                    `${import.meta.env.PUBLIC_BACKEND_URL}/api/gayify`,
+                    `${import.meta.env.PUBLIC_BACKEND_URL}api/gayify`,
                     {
                         method: 'POST',
                         body: formData,
